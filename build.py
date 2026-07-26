@@ -1,3 +1,18 @@
+# DIAG_MARKER
+
+import json, os, time
+_diag_start = time.time()
+os.makedirs('diagnostic', exist_ok=True)
+try:
+    exec(open(__file__).read().split('# DIAG_MARKER')[0])
+except Exception as e:
+    open('diagnostic/build.logd','w').write(f'Build failed: {e}')
+    json.dump({'status':'failed','error':str(e),'elapsed':time.time()-_diag_start}, open('diagnostic/build.json','w'), indent=2)
+    raise
+else:
+    open('diagnostic/build.logd','w').write(f'Build OK in {time.time()-_diag_start:.2f}s')
+    json.dump({'status':'completed','elapsed':time.time()-_diag_start}, open('diagnostic/build.json','w'), indent=2)
+
 #!/usr/bin/env python3
 
 import argparse
